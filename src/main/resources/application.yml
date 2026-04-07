@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  ai:
+    mcp:
+      server:
+        name: kanboard
+        version: 0.0.1
+        type: SYNC
+        protocol: STREAMABLE
+
+kanboard:
+  url: ${KANBOARD_URL:https://marcushowarth.com/jsonrpc.php}
+  api-token: ${KANBOARD_API_TOKEN:}
+  username: ${KANBOARD_USERNAME:claude}

@@ -10,6 +10,15 @@ spring:
         type: SYNC
         protocol: STREAMABLE
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
 kanboard:
   url: ${KANBOARD_URL:https://marcushowarth.com/jsonrpc.php}
   api-token: ${KANBOARD_API_TOKEN:}

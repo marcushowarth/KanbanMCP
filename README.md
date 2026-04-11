@@ -139,4 +139,4 @@ push to main
 - `KanboardClient` uses `java.net.http.HttpClient` — no extra HTTP libraries
 - Tools return `JsonNode` pretty-printed as strings — no model POJOs needed
 - Java records for all DTOs
-- Credentials via env vars only — never hardcoded
+- `KANBOARD_API_TOKEN` must be injected at runtime — all other config has defaults in `application.yml`

@@ -3,6 +3,7 @@ package eu.howarth.mcp.kanban.config;
 import eu.howarth.mcp.kanban.tools.BoardTools;
 import eu.howarth.mcp.kanban.tools.CommentTools;
 import eu.howarth.mcp.kanban.tools.ProjectTools;
+import eu.howarth.mcp.kanban.tools.SubtaskTools;
 import eu.howarth.mcp.kanban.tools.TaskTools;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.method.MethodToolCallbackProvider;
@@ -17,9 +18,10 @@ public class McpToolConfig {
             ProjectTools projectTools,
             BoardTools boardTools,
             TaskTools taskTools,
-            CommentTools commentTools) {
+            CommentTools commentTools,
+            SubtaskTools subtaskTools) {
         return MethodToolCallbackProvider.builder()
-                .toolObjects(projectTools, boardTools, taskTools, commentTools)
+                .toolObjects(projectTools, boardTools, taskTools, commentTools, subtaskTools)
                 .build();
     }
 }

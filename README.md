@@ -9,7 +9,7 @@ A Spring Boot MCP (Model Context Protocol) server that bridges Claude to a [Kanb
 - **MCP endpoint:** `/mcp`
 - **Health endpoint:** `/actuator/health`
 
-## Tools (13)
+## Tools (17)
 
 | Class | Tool | What it does |
 |-------|------|--------------|
@@ -26,6 +26,10 @@ A Spring Boot MCP (Model Context Protocol) server that bridges Claude to a [Kanb
 | TaskTools | `openTask` | Reopen a closed task |
 | CommentTools | `getAllComments` | List comments on a task |
 | CommentTools | `createComment` | Add a comment |
+| SubtaskTools | `getAllSubtasks` | List subtasks (checklist items) on a task |
+| SubtaskTools | `createSubtask` | Add a subtask to a task |
+| SubtaskTools | `updateSubtask` | Update subtask title or status (0=todo, 1=in progress, 2=done) |
+| SubtaskTools | `removeSubtask` | Delete a subtask |
 
 ## Configuration
 

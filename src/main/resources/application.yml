@@ -20,6 +20,6 @@ management:
       show-details: always
 
 kanboard:
-  url: ${KANBOARD_URL:https://kanban.howarth.eu/jsonrpc.php}
+  url: ${KANBOARD_URL:@kanboard.default.url@}
   api-token: ${KANBOARD_API_TOKEN:}
-  username: ${KANBOARD_USERNAME:claude}
+  username: ${KANBOARD_USERNAME:@kanboard.default.username@}

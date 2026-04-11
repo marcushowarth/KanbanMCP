@@ -31,9 +31,9 @@ A Spring Boot MCP (Model Context Protocol) server that bridges Claude to a [Kanb
 
 | Env var | Default | Description |
 |---------|---------|-------------|
-| `KANBOARD_URL` | `https://your-kanboard/jsonrpc.php` | JSON-RPC endpoint |
+| `KANBOARD_URL` | `https://kanban.howarth.eu/jsonrpc.php` | JSON-RPC endpoint |
 | `KANBOARD_API_TOKEN` | *(required)* | API token from Kanboard profile |
-| `KANBOARD_USERNAME` | `jsonrpc` | Basic auth username |
+| `KANBOARD_USERNAME` | `claude` | Basic auth username |
 
 Get your API token: Kanboard → Profile → API → Personal token.
 

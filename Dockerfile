@@ -30,7 +30,7 @@ RUN chown appuser:appgroup app.jar
 USER appuser
 
 # KANBOARD_API_TOKEN must be injected at runtime — empty default is intentional
-ENV KANBOARD_URL="https://marcushowarth.com/jsonrpc.php" \
+ENV KANBOARD_URL="https://kanban.howarth.eu/jsonrpc.php" \
     KANBOARD_API_TOKEN="" \
     KANBOARD_USERNAME="claude"
 

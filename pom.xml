@@ -20,9 +20,7 @@
     <properties>
         <java.version>17</java.version>
         <spring-ai.version>2.0.0-M3</spring-ai.version>
-        <kanboard.default.url>https://kanban.howarth.eu/jsonrpc.php</kanboard.default.url>
-        <kanboard.default.username>claude</kanboard.default.username>
-    </properties>
+</properties>
 
     <dependencyManagement>
         <dependencies>

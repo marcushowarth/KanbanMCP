@@ -1,5 +1,5 @@
 # ─── Build stage ─────────────────────────────────────────────────────────────
-FROM eclipse-temurin:17-jdk-jammy AS build
+FROM eclipse-temurin:21-jdk-jammy AS build
 
 WORKDIR /build
 
@@ -16,7 +16,7 @@ COPY src/ src/
 RUN ./mvnw package -DskipTests -q
 
 # ─── Runtime stage ────────────────────────────────────────────────────────────
-FROM eclipse-temurin:17-jre-jammy AS runtime
+FROM eclipse-temurin:21-jre-jammy AS runtime
 
 RUN groupadd --system --gid 1001 appgroup && \
     useradd --system --uid 1001 --gid appgroup --no-create-home appuser

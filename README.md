@@ -4,10 +4,11 @@ A Spring Boot MCP (Model Context Protocol) server that bridges Claude to a [Kanb
 
 ## Stack
 
-- **Java 17**, Spring Boot 4.0.5, Spring AI 2.0.0-M3
+- **Java 21**, Spring Boot 4.0.5, Spring AI 2.0.0-M3
 - **MCP transport:** Streamable HTTP (MCP protocol 2025-11-25)
 - **MCP endpoint:** `/mcp`
 - **Health endpoint:** `/actuator/health`
+- **Info endpoint:** `/actuator/info` (build version + timestamp)
 
 ## Tools (17)
 

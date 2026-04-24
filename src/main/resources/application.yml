@@ -11,6 +11,10 @@ spring:
         protocol: STREAMABLE
         streamable-http:
           keep-alive-interval: 15s
+        capabilities:
+          resource: false
+          prompt: false
+          completion: false
 
 management:
   endpoints:

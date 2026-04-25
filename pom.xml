@@ -12,9 +12,9 @@
     </parent>
 
     <groupId>eu.howarth.mcp.kanban</groupId>
-    <artifactId>kanban-api</artifactId>
+    <artifactId>kanban-mcp</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>KanbanApi</name>
+    <name>KanbanMCP</name>
     <description>MCP server bridging Claude Code to Kanboard</description>
 
     <properties>

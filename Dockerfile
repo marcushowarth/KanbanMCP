@@ -23,7 +23,7 @@ RUN groupadd --system --gid 1001 appgroup && \
 
 WORKDIR /app
 
-COPY --from=build /build/target/kanban-api-*.jar app.jar
+COPY --from=build /build/target/kanban-mcp-*.jar app.jar
 
 RUN chown appuser:appgroup app.jar
 

@@ -54,6 +54,8 @@ jobs:
             -o StrictHostKeyChecking=no \
             ec2-user@${{ secrets.EC2_HOST }} \
             "aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 057133611121.dkr.ecr.eu-west-2.amazonaws.com
+            docker stop kanban-api || true
+            docker rm kanban-api || true
             docker pull 057133611121.dkr.ecr.eu-west-2.amazonaws.com/kanban-mcp:latest
             docker stop kanban-mcp || true
             docker rm kanban-mcp || true

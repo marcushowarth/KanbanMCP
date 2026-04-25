@@ -7,7 +7,7 @@ on:
 env:
   AWS_REGION: eu-west-2
   ECR_REGISTRY: 057133611121.dkr.ecr.eu-west-2.amazonaws.com
-  ECR_REPOSITORY: kanban-api
+  ECR_REPOSITORY: kanban-mcp
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
@@ -54,13 +54,13 @@ jobs:
             -o StrictHostKeyChecking=no \
             ec2-user@${{ secrets.EC2_HOST }} \
             "aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 057133611121.dkr.ecr.eu-west-2.amazonaws.com
-            docker pull 057133611121.dkr.ecr.eu-west-2.amazonaws.com/kanban-api:latest
-            docker stop kanban-api || true
-            docker rm kanban-api || true
+            docker pull 057133611121.dkr.ecr.eu-west-2.amazonaws.com/kanban-mcp:latest
+            docker stop kanban-mcp || true
+            docker rm kanban-mcp || true
             docker run -d \
-              --name kanban-api \
+              --name kanban-mcp \
               --restart unless-stopped \
               -p 8080:8080 \
               -e KANBOARD_API_TOKEN='${{ secrets.KANBOARD_API_TOKEN }}' \
-              057133611121.dkr.ecr.eu-west-2.amazonaws.com/kanban-api:latest"
+              057133611121.dkr.ecr.eu-west-2.amazonaws.com/kanban-mcp:latest"
           rm -f /tmp/deploy_key

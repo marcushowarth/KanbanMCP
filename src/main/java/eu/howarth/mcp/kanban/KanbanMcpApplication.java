@@ -6,9 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-public class KanbanApiApplication {
+public class KanbanMcpApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(KanbanApiApplication.class, args);
+        SpringApplication.run(KanbanMcpApplication.class, args);
     }
 }

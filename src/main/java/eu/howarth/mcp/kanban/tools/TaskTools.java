@@ -84,4 +84,18 @@ public class TaskTools {
             @ToolParam(description = "The numeric ID of the task to reopen") int taskId) {
         return client.executePretty("openTask", Map.of("task_id", taskId));
     }
+
+    @Tool(description = "Move a task to a different project, optionally into a specific column and swimlane in the destination project.")
+    public String moveTaskToProject(
+            @ToolParam(description = "The numeric ID of the task to move") int taskId,
+            @ToolParam(description = "The numeric ID of the destination project") int projectId,
+            @ToolParam(description = "The column ID in the destination project (optional)", required = false) Integer columnId,
+            @ToolParam(description = "The swimlane ID in the destination project (optional, defaults to 0)", required = false) Integer swimlaneId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("task_id", taskId);
+        params.put("project_id", projectId);
+        if (columnId != null) params.put("column_id", columnId);
+        params.put("swimlane_id", swimlaneId != null ? swimlaneId : 0);
+        return client.executePretty("moveTaskToProject", params);
+    }
 }

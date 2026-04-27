@@ -9,8 +9,6 @@ spring:
         version: 0.0.1
         type: SYNC
         protocol: STREAMABLE
-        streamable-http:
-          keep-alive-interval: 15s
         capabilities:
           resource: false
           prompt: false

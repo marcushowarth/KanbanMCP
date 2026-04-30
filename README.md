@@ -1,4 +1,4 @@
-# KanbanApi — Kanboard MCP Server
+# KanbanMCP — Kanboard MCP Server
 
 A Spring Boot MCP (Model Context Protocol) server that bridges Claude to a [Kanboard](https://kanboard.org) instance. Lets Claude read boards, manage tasks, add comments, and move cards — from Claude Desktop or Claude Code.
 
@@ -10,7 +10,7 @@ A Spring Boot MCP (Model Context Protocol) server that bridges Claude to a [Kanb
 - **Health endpoint:** `/actuator/health`
 - **Info endpoint:** `/actuator/info` (build version + timestamp)
 
-## Tools (17)
+## Tools (20)
 
 | Class | Tool | What it does |
 |-------|------|--------------|
@@ -31,6 +31,9 @@ A Spring Boot MCP (Model Context Protocol) server that bridges Claude to a [Kanb
 | SubtaskTools | `createSubtask` | Add a subtask to a task |
 | SubtaskTools | `updateSubtask` | Update subtask title or status (0=todo, 1=in progress, 2=done) |
 | SubtaskTools | `removeSubtask` | Delete a subtask |
+| ExternalLinkTools | `getAllExternalTaskLinks` | List external links on a task |
+| ExternalLinkTools | `createExternalTaskLink` | Attach a URL to a task (e.g. GitHub commit, PR) |
+| ExternalLinkTools | `removeExternalTaskLink` | Remove an external link |
 
 ## Configuration
 

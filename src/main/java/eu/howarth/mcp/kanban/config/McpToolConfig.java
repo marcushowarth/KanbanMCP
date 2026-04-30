@@ -2,6 +2,7 @@ package eu.howarth.mcp.kanban.config;
 
 import eu.howarth.mcp.kanban.tools.BoardTools;
 import eu.howarth.mcp.kanban.tools.CommentTools;
+import eu.howarth.mcp.kanban.tools.ExternalLinkTools;
 import eu.howarth.mcp.kanban.tools.ProjectTools;
 import eu.howarth.mcp.kanban.tools.SubtaskTools;
 import eu.howarth.mcp.kanban.tools.TaskTools;
@@ -19,9 +20,10 @@ public class McpToolConfig {
             BoardTools boardTools,
             TaskTools taskTools,
             CommentTools commentTools,
-            SubtaskTools subtaskTools) {
+            SubtaskTools subtaskTools,
+            ExternalLinkTools externalLinkTools) {
         return MethodToolCallbackProvider.builder()
-                .toolObjects(projectTools, boardTools, taskTools, commentTools, subtaskTools)
+                .toolObjects(projectTools, boardTools, taskTools, commentTools, subtaskTools, externalLinkTools)
                 .build();
     }
 }

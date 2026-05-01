@@ -10,7 +10,7 @@ A Spring Boot MCP (Model Context Protocol) server that bridges Claude to a [Kanb
 - **Health endpoint:** `/actuator/health`
 - **Info endpoint:** `/actuator/info` (build version + timestamp)
 
-## Tools (20)
+## Tools (23)
 
 | Class | Tool | What it does |
 |-------|------|--------------|
@@ -34,6 +34,9 @@ A Spring Boot MCP (Model Context Protocol) server that bridges Claude to a [Kanb
 | ExternalLinkTools | `getAllExternalTaskLinks` | List external links on a task |
 | ExternalLinkTools | `createExternalTaskLink` | Attach a URL to a task (e.g. GitHub commit, PR) |
 | ExternalLinkTools | `removeExternalTaskLink` | Remove an external link |
+| TagTools | `getTagsByProject` | List all tags defined in a project |
+| TagTools | `getTaskTags` | Get tags assigned to a task |
+| TagTools | `setTaskTags` | Set tags on a task (replaces existing) |
 
 ## Configuration
 

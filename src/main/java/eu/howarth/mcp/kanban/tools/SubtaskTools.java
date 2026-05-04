@@ -47,6 +47,6 @@ public class SubtaskTools {
     @Tool(description = "Remove a subtask (checklist item) from a task.")
     public String removeSubtask(
             @ToolParam(description = "The numeric ID of the subtask") int subtaskId) {
-        return client.executePretty("removeSubtask", Map.of("id", subtaskId));
+        return client.executePretty("removeSubtask", Map.of("subtask_id", subtaskId));
     }
 }

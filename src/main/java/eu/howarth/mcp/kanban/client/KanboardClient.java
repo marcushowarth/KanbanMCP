@@ -41,7 +41,7 @@ public class KanboardClient {
             var request = new JsonRpcRequest(method, requestId.getAndIncrement(), params);
             String body = objectMapper.writeValueAsString(request);
 
-            log.info("Kanboard request: {} {}", method, body);
+            log.debug("Kanboard request: {} {}", method, body);
 
             String credentials = properties.username() + ":" + properties.apiToken();
             String authHeader = "Basic " + Base64.getEncoder()

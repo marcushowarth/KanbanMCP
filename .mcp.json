@@ -2,7 +2,7 @@
   "mcpServers": {
     "kanboard": {
       "type": "http",
-      "url": "http://localhost:8080/mcp"
+      "url": "https://mcp.howarth.eu/kanban/mcp"
     }
   }
 }

@@ -32,4 +32,13 @@ class JsonRpcSerializationTest {
         assertTrue(json.contains("\"task_id\""), "params must contain task_id key, got: " + json);
         assertTrue(json.contains("868"), "params must contain value 868, got: " + json);
     }
+
+    @Test
+    void removeSubtask_zeroValue_stillPresent() throws Exception {
+        // If MCP framework fails to map the argument, subtaskId defaults to 0
+        var request = new JsonRpcRequest("removeSubtask", 1, Map.of("subtask_id", 0));
+        String json = objectMapper.writeValueAsString(request);
+        System.out.println("removeSubtask zero JSON: " + json);
+        assertTrue(json.contains("\"subtask_id\""), "key must be present even for value=0, got: " + json);
+    }
 }

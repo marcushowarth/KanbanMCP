@@ -8,7 +8,7 @@ spring:
         name: kanboard
         version: 0.0.1
         type: SYNC
-        protocol: STREAMABLE
+        protocol: STATELESS
         capabilities:
           resource: false
           prompt: false

@@ -141,6 +141,32 @@ push to main
 - **IAM user for CI** — ECR push permissions only
 - **Caddy** — reverse proxy on EC2 for HTTPS + automatic Let's Encrypt cert
 
+## Auth model
+
+Two auth layers: a static bearer token at Caddy (edge), and Basic Auth per request to Kanboard.
+
+```mermaid
+sequenceDiagram
+    participant CC as Claude Code
+    participant C as Caddy
+    participant MCP as KanbanMCP<br/>(Spring Boot)
+    participant KB as Kanboard API
+
+    Note over CC,C: Static bearer token — no session, no expiry
+    Note over C,MCP: Caddy strips /kanban prefix
+
+    CC->>+C: Tool call /kanban/mcp<br/>Authorization: Bearer <token>
+    C->>+MCP: Forward → /mcp<br/>(uri strip_prefix /kanban)
+    Note over MCP: Build Basic Auth header<br/>base64(username:apiToken)
+    MCP->>+KB: POST /jsonrpc.php<br/>Authorization: Basic ...
+    KB-->>-MCP: JSON-RPC response
+    MCP-->>-C: Result
+    C-->>-CC: Result
+```
+
+- **Caddy layer:** static bearer token, validated on every request — no sessions, no timeouts
+- **Kanboard layer:** Basic Auth header built fresh on every `KanboardClient.execute()` call
+
 ## Design notes
 
 - `KanboardClient` uses `java.net.http.HttpClient` — no extra HTTP libraries

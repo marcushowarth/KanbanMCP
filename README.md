@@ -10,7 +10,7 @@ A Spring Boot MCP (Model Context Protocol) server that bridges Claude to a [Kanb
 - **Health endpoint:** `/actuator/health`
 - **Info endpoint:** `/actuator/info` (build version + timestamp)
 
-## Tools (23)
+## Tools (30)
 
 | Class | Tool | What it does |
 |-------|------|--------------|
@@ -25,8 +25,11 @@ A Spring Boot MCP (Model Context Protocol) server that bridges Claude to a [Kanb
 | TaskTools | `updateTask` | Update any task fields |
 | TaskTools | `closeTask` | Mark task as done |
 | TaskTools | `openTask` | Reopen a closed task |
+| TaskTools | `moveTaskToProject` | Move a task to another project/column/swimlane |
 | CommentTools | `getAllComments` | List comments on a task |
-| CommentTools | `createComment` | Add a comment |
+| CommentTools | `createComment` | Add a comment (authored by the automation user) |
+| CommentTools | `updateComment` | Edit a comment authored by this server (overwrites content) |
+| CommentTools | `removeComment` | Delete a comment authored by this server |
 | SubtaskTools | `getAllSubtasks` | List subtasks (checklist items) on a task |
 | SubtaskTools | `createSubtask` | Add a subtask to a task |
 | SubtaskTools | `updateSubtask` | Update subtask title or status (0=todo, 1=in progress, 2=done) |
@@ -34,6 +37,10 @@ A Spring Boot MCP (Model Context Protocol) server that bridges Claude to a [Kanb
 | ExternalLinkTools | `getAllExternalTaskLinks` | List external links on a task |
 | ExternalLinkTools | `createExternalTaskLink` | Attach a URL to a task (e.g. GitHub commit, PR) |
 | ExternalLinkTools | `removeExternalTaskLink` | Remove an external link |
+| TaskLinkTools | `getAllTaskLinks` | List internal task-to-task links |
+| TaskLinkTools | `createTaskLink` | Link a task to another (relates to, blocks, etc.) |
+| TaskLinkTools | `removeTaskLink` | Remove an internal task link |
+| CategoryTools | `getAllCategories` | List categories defined in a project |
 | TagTools | `getTagsByProject` | List all tags defined in a project |
 | TagTools | `getTaskTags` | Get tags assigned to a task |
 | TagTools | `setTaskTags` | Set tags on a task (replaces existing) |

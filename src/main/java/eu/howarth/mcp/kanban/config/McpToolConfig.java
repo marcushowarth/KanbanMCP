@@ -1,11 +1,13 @@
 package eu.howarth.mcp.kanban.config;
 
 import eu.howarth.mcp.kanban.tools.BoardTools;
+import eu.howarth.mcp.kanban.tools.CategoryTools;
 import eu.howarth.mcp.kanban.tools.CommentTools;
 import eu.howarth.mcp.kanban.tools.ExternalLinkTools;
 import eu.howarth.mcp.kanban.tools.ProjectTools;
 import eu.howarth.mcp.kanban.tools.SubtaskTools;
 import eu.howarth.mcp.kanban.tools.TagTools;
+import eu.howarth.mcp.kanban.tools.TaskLinkTools;
 import eu.howarth.mcp.kanban.tools.TaskTools;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.method.MethodToolCallbackProvider;
@@ -23,9 +25,11 @@ public class McpToolConfig {
             CommentTools commentTools,
             SubtaskTools subtaskTools,
             ExternalLinkTools externalLinkTools,
+            TaskLinkTools taskLinkTools,
+            CategoryTools categoryTools,
             TagTools tagTools) {
         return MethodToolCallbackProvider.builder()
-                .toolObjects(projectTools, boardTools, taskTools, commentTools, subtaskTools, externalLinkTools, tagTools)
+                .toolObjects(projectTools, boardTools, taskTools, commentTools, subtaskTools, externalLinkTools, taskLinkTools, categoryTools, tagTools)
                 .build();
     }
 }

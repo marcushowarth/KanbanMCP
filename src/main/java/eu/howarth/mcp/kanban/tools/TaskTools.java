@@ -41,7 +41,8 @@ public class TaskTools {
             @ToolParam(description = "Color identifier e.g. 'blue', 'green', 'red', 'yellow' (optional)", required = false) String colorId,
             @ToolParam(description = "The column ID to place the task in (optional, defaults to first column)", required = false) Integer columnId,
             @ToolParam(description = "The user ID to assign the task to (optional)", required = false) Integer ownerId,
-            @ToolParam(description = "Due date in YYYY-MM-DD format (optional)", required = false) String dateDue) {
+            @ToolParam(description = "Due date in YYYY-MM-DD format (optional)", required = false) String dateDue,
+            @ToolParam(description = "Category ID to classify the task (optional; get valid IDs from getAllCategories)", required = false) Integer categoryId) {
         Map<String, Object> params = new HashMap<>();
         params.put("title", title);
         params.put("project_id", projectId);
@@ -50,6 +51,7 @@ public class TaskTools {
         if (columnId != null) params.put("column_id", columnId);
         if (ownerId != null) params.put("owner_id", ownerId);
         if (dateDue != null) params.put("date_due", dateDue);
+        if (categoryId != null) params.put("category_id", categoryId);
         return client.executePretty("createTask", params);
     }
 
@@ -61,7 +63,8 @@ public class TaskTools {
             @ToolParam(description = "New color identifier (optional)", required = false) String colorId,
             @ToolParam(description = "New owner/assignee user ID (optional)", required = false) Integer ownerId,
             @ToolParam(description = "New due date in YYYY-MM-DD format (optional)", required = false) String dateDue,
-            @ToolParam(description = "Priority value (optional)", required = false) Integer priority) {
+            @ToolParam(description = "Priority value (optional)", required = false) Integer priority,
+            @ToolParam(description = "New category ID to classify the task (optional; get valid IDs from getAllCategories)", required = false) Integer categoryId) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", taskId);
         if (title != null) params.put("title", title);
@@ -70,6 +73,7 @@ public class TaskTools {
         if (ownerId != null) params.put("owner_id", ownerId);
         if (dateDue != null) params.put("date_due", dateDue);
         if (priority != null) params.put("priority", priority);
+        if (categoryId != null) params.put("category_id", categoryId);
         return client.executePretty("updateTask", params);
     }
 

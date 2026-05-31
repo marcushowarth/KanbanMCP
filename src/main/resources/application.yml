@@ -27,3 +27,4 @@ kanboard:
   url: ${KANBOARD_URL:https://kanban.howarth.eu/jsonrpc.php}
   api-token: ${KANBOARD_API_TOKEN:}
   username: ${KANBOARD_USERNAME:claude}
+  user-id: ${KANBOARD_USER_ID:29}

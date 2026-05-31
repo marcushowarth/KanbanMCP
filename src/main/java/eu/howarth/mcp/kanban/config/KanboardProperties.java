@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record KanboardProperties(
         String url,
         String apiToken,
-        String username
+        String username,
+        int userId
 ) {
 }

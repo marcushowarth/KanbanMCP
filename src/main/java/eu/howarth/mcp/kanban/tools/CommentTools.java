@@ -33,4 +33,14 @@ public class CommentTools {
                 "content", content
         ));
     }
+
+    @Tool(description = "Update the content of an existing comment. This REPLACES the entire comment content, it does not append. Always call getAllComments first to read the current text and the comment ID, then send the full intended content to avoid accidentally wiping it.")
+    public String updateComment(
+            @ToolParam(description = "The numeric ID of the comment to update (obtain it from getAllComments)") int id,
+            @ToolParam(description = "The full new comment text. This overwrites the existing content entirely.") String content) {
+        return client.executePretty("updateComment", Map.of(
+                "id", id,
+                "content", content
+        ));
+    }
 }

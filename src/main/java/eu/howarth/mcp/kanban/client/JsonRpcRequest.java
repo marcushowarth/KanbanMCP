@@ -1,7 +1,10 @@
 package eu.howarth.mcp.kanban.client;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 import java.util.Map;
 
+@RegisterForReflection
 public record JsonRpcRequest(
         String jsonrpc,
         String method,

@@ -1,27 +1,12 @@
-server:
-  port: 8080
-
-spring:
-  ai:
-    mcp:
-      server:
-        name: kanboard
-        version: 0.0.1
-        type: SYNC
-        protocol: STATELESS
-        capabilities:
-          resource: false
-          prompt: false
-          completion: false
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
-  endpoint:
-    health:
-      show-details: always
+quarkus:
+  application:
+    name: kanban-mcp
+  http:
+    port: 8080
+    test-port: 0
+    root-path: /kanban
+    cors:
+      enabled: true   # required by the streamable-HTTP MCP transport (quarkus-mcp-server-http)
 
 kanboard:
   url: ${KANBOARD_URL:https://kanban.howarth.eu/jsonrpc.php}

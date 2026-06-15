@@ -1,13 +1,13 @@
 package eu.howarth.mcp.kanban.tools;
 
 import eu.howarth.mcp.kanban.client.KanboardClient;
-import org.springframework.ai.tool.annotation.Tool;
-import org.springframework.ai.tool.annotation.ToolParam;
-import org.springframework.stereotype.Service;
+import io.quarkiverse.mcp.server.Tool;
+import io.quarkiverse.mcp.server.ToolArg;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.Map;
 
-@Service
+@ApplicationScoped
 public class ProjectTools {
 
     private final KanboardClient client;
@@ -23,7 +23,7 @@ public class ProjectTools {
 
     @Tool(description = "Get detailed information about a specific project by its ID, including name, description, board URL, and status.")
     public String getProjectById(
-            @ToolParam(description = "The numeric ID of the project") int projectId) {
+            @ToolArg(description = "The numeric ID of the project") int projectId) {
         return client.executePretty("getProjectById", Map.of("project_id", projectId));
     }
 }

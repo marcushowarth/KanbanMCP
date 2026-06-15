@@ -1,11 +1,10 @@
 package eu.howarth.mcp.kanban.client;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.howarth.mcp.kanban.config.KanboardProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import jakarta.enterprise.context.ApplicationScoped;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -16,10 +15,10 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Component
+@ApplicationScoped
 public class KanboardClient {
 
-    private static final Logger log = LoggerFactory.getLogger(KanboardClient.class);
+    private static final Logger log = Logger.getLogger(KanboardClient.class);
 
     private final KanboardProperties properties;
     private final ObjectMapper objectMapper;
@@ -41,7 +40,7 @@ public class KanboardClient {
             var request = new JsonRpcRequest(method, requestId.getAndIncrement(), params);
             String body = objectMapper.writeValueAsString(request);
 
-            log.debug("Kanboard request: {} {}", method, body);
+            log.debugf("Kanboard request: %s %s", method, body);
 
             String credentials = properties.username() + ":" + properties.apiToken();
             String authHeader = "Basic " + Base64.getEncoder()
@@ -57,7 +56,7 @@ public class KanboardClient {
             HttpResponse<String> httpResponse = httpClient.send(
                     httpRequest, HttpResponse.BodyHandlers.ofString());
 
-            log.debug("Kanboard response: {}", httpResponse.body());
+            log.debugf("Kanboard response: %s", httpResponse.body());
 
             JsonRpcResponse response = objectMapper.readValue(
                     httpResponse.body(), JsonRpcResponse.class);

@@ -1,7 +1,9 @@
 package eu.howarth.mcp.kanban.client;
 
-import tools.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 
+@RegisterForReflection
 public record JsonRpcResponse(
         String jsonrpc,
         int id,

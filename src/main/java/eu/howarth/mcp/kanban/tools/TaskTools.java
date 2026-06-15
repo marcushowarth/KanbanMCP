@@ -1,14 +1,14 @@
 package eu.howarth.mcp.kanban.tools;
 
 import eu.howarth.mcp.kanban.client.KanboardClient;
-import org.springframework.ai.tool.annotation.Tool;
-import org.springframework.ai.tool.annotation.ToolParam;
-import org.springframework.stereotype.Service;
+import io.quarkiverse.mcp.server.Tool;
+import io.quarkiverse.mcp.server.ToolArg;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Service
+@ApplicationScoped
 public class TaskTools {
 
     private final KanboardClient client;
@@ -19,8 +19,8 @@ public class TaskTools {
 
     @Tool(description = "Search for tasks across all projects using a query string. Supports Kanboard search syntax (e.g., 'status:open assignee:me', project name, or free text).")
     public String searchTasks(
-            @ToolParam(description = "The numeric ID of the project to search in") int projectId,
-            @ToolParam(description = "Search query using Kanboard search syntax") String query) {
+            @ToolArg(description = "The numeric ID of the project to search in") int projectId,
+            @ToolArg(description = "Search query using Kanboard search syntax") String query) {
         return client.executePretty("searchTasks", Map.of(
                 "project_id", projectId,
                 "query", query
@@ -29,20 +29,20 @@ public class TaskTools {
 
     @Tool(description = "Get detailed information about a specific task by its ID, including title, description, assignee, due date, column, and all metadata.")
     public String getTask(
-            @ToolParam(description = "The numeric ID of the task") int taskId) {
+            @ToolArg(description = "The numeric ID of the task") int taskId) {
         return client.executePretty("getTask", Map.of("task_id", taskId));
     }
 
     @Tool(description = "Create a new task in a project. Only title and project_id are required; all other fields are optional.")
     public String createTask(
-            @ToolParam(description = "Title of the new task") String title,
-            @ToolParam(description = "The numeric ID of the project") int projectId,
-            @ToolParam(description = "Task description in Markdown format (optional)", required = false) String description,
-            @ToolParam(description = "Color identifier e.g. 'blue', 'green', 'red', 'yellow' (optional)", required = false) String colorId,
-            @ToolParam(description = "The column ID to place the task in (optional, defaults to first column)", required = false) Integer columnId,
-            @ToolParam(description = "The user ID to assign the task to (optional)", required = false) Integer ownerId,
-            @ToolParam(description = "Due date in YYYY-MM-DD format (optional)", required = false) String dateDue,
-            @ToolParam(description = "Category ID to classify the task (optional; get valid IDs from getAllCategories)", required = false) Integer categoryId) {
+            @ToolArg(description = "Title of the new task") String title,
+            @ToolArg(description = "The numeric ID of the project") int projectId,
+            @ToolArg(description = "Task description in Markdown format (optional)", required = false) String description,
+            @ToolArg(description = "Color identifier e.g. 'blue', 'green', 'red', 'yellow' (optional)", required = false) String colorId,
+            @ToolArg(description = "The column ID to place the task in (optional, defaults to first column)", required = false) Integer columnId,
+            @ToolArg(description = "The user ID to assign the task to (optional)", required = false) Integer ownerId,
+            @ToolArg(description = "Due date in YYYY-MM-DD format (optional)", required = false) String dateDue,
+            @ToolArg(description = "Category ID to classify the task (optional; get valid IDs from getAllCategories)", required = false) Integer categoryId) {
         Map<String, Object> params = new HashMap<>();
         params.put("title", title);
         params.put("project_id", projectId);
@@ -57,14 +57,14 @@ public class TaskTools {
 
     @Tool(description = "Update an existing task. Only provide the fields you want to change; unspecified fields remain unchanged.")
     public String updateTask(
-            @ToolParam(description = "The numeric ID of the task to update") int taskId,
-            @ToolParam(description = "New title (optional)", required = false) String title,
-            @ToolParam(description = "New description in Markdown (optional)", required = false) String description,
-            @ToolParam(description = "New color identifier (optional)", required = false) String colorId,
-            @ToolParam(description = "New owner/assignee user ID (optional)", required = false) Integer ownerId,
-            @ToolParam(description = "New due date in YYYY-MM-DD format (optional)", required = false) String dateDue,
-            @ToolParam(description = "Priority value (optional)", required = false) Integer priority,
-            @ToolParam(description = "New category ID to classify the task (optional; get valid IDs from getAllCategories)", required = false) Integer categoryId) {
+            @ToolArg(description = "The numeric ID of the task to update") int taskId,
+            @ToolArg(description = "New title (optional)", required = false) String title,
+            @ToolArg(description = "New description in Markdown (optional)", required = false) String description,
+            @ToolArg(description = "New color identifier (optional)", required = false) String colorId,
+            @ToolArg(description = "New owner/assignee user ID (optional)", required = false) Integer ownerId,
+            @ToolArg(description = "New due date in YYYY-MM-DD format (optional)", required = false) String dateDue,
+            @ToolArg(description = "Priority value (optional)", required = false) Integer priority,
+            @ToolArg(description = "New category ID to classify the task (optional; get valid IDs from getAllCategories)", required = false) Integer categoryId) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", taskId);
         if (title != null) params.put("title", title);
@@ -79,22 +79,22 @@ public class TaskTools {
 
     @Tool(description = "Close a task (mark it as done). The task will be marked as completed/inactive.")
     public String closeTask(
-            @ToolParam(description = "The numeric ID of the task to close") int taskId) {
+            @ToolArg(description = "The numeric ID of the task to close") int taskId) {
         return client.executePretty("closeTask", Map.of("task_id", taskId));
     }
 
     @Tool(description = "Reopen a previously closed task. The task will be marked as active again.")
     public String openTask(
-            @ToolParam(description = "The numeric ID of the task to reopen") int taskId) {
+            @ToolArg(description = "The numeric ID of the task to reopen") int taskId) {
         return client.executePretty("openTask", Map.of("task_id", taskId));
     }
 
     @Tool(description = "Move a task to a different project, optionally into a specific column and swimlane in the destination project.")
     public String moveTaskToProject(
-            @ToolParam(description = "The numeric ID of the task to move") int taskId,
-            @ToolParam(description = "The numeric ID of the destination project") int projectId,
-            @ToolParam(description = "The column ID in the destination project (optional)", required = false) Integer columnId,
-            @ToolParam(description = "The swimlane ID in the destination project (optional, defaults to 0)", required = false) Integer swimlaneId) {
+            @ToolArg(description = "The numeric ID of the task to move") int taskId,
+            @ToolArg(description = "The numeric ID of the destination project") int projectId,
+            @ToolArg(description = "The column ID in the destination project (optional)", required = false) Integer columnId,
+            @ToolArg(description = "The swimlane ID in the destination project (optional, defaults to 0)", required = false) Integer swimlaneId) {
         Map<String, Object> params = new HashMap<>();
         params.put("task_id", taskId);
         params.put("project_id", projectId);

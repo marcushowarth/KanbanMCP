@@ -1,14 +1,14 @@
 # KanbanMCP — Kanboard MCP Server
 
-A Spring Boot MCP (Model Context Protocol) server that bridges Claude to a [Kanboard](https://kanboard.org) instance. Lets Claude read boards, manage tasks, add comments, and move cards — from Claude Desktop or Claude Code.
+A Quarkus-native MCP (Model Context Protocol) server that bridges Claude to a [Kanboard](https://kanboard.org) instance. Lets Claude read boards, manage tasks, add comments, and move cards — from Claude Desktop or Claude Code.
 
 ## Stack
 
-- **Java 21**, Spring Boot 4.0.5, Spring AI 2.0.0-M4
-- **MCP transport:** Streamable HTTP (MCP protocol 2025-11-25)
-- **MCP endpoint:** `/mcp`
-- **Health endpoint:** `/actuator/health`
-- **Info endpoint:** `/actuator/info` (build version + timestamp)
+- **Java 25**, Quarkus 3.33.1 (LTS), `quarkus-mcp-server` 1.12.0
+- **Deploy artifact:** GraalVM/Mandrel **native image** (~50 MB, boots in ~0.03 s, ~30 MB RAM)
+- **MCP transport:** Streamable HTTP (`quarkus-mcp-server-http`)
+- **MCP endpoint:** `/kanban/mcp` (HTTP `root-path` is `/kanban`)
+- **Health endpoint:** `/kanban/q/health` (SmallRye Health)
 
 ## Tools (30)
 
@@ -67,7 +67,7 @@ Add to `claude_desktop_config.json`:
       "command": "npx",
       "args": [
         "mcp-remote",
-        "https://your-mcp-host/mcp"
+        "https://your-mcp-host/kanban/mcp"
       ]
     }
   }
@@ -82,7 +82,7 @@ Add to `claude_desktop_config.json`:
       "command": "npx",
       "args": [
         "mcp-remote",
-        "http://localhost:8080/mcp"
+        "http://localhost:8080/kanban/mcp"
       ]
     }
   }
@@ -97,26 +97,33 @@ Restart Claude Desktop after editing. The MCP server will appear in the tools pa
 
 ## Use with Claude Code
 
-A `.mcp.json` is included in this repo. Claude Code will pick it up automatically when run from this directory, pointing at `http://localhost:8080/mcp`.
+A `.mcp.json` is included in this repo. Claude Code will pick it up automatically when run from this directory, pointing at `http://localhost:8080/kanban/mcp`.
 
 ## Run locally
 
 ```bash
 export KANBOARD_API_TOKEN=your_token
-./mvnw spring-boot:run
+./mvnw quarkus:dev
 ```
 
-Server starts on port 8080. Test it:
+Dev mode serves on port 8080. Test it:
 ```bash
-curl http://localhost:8080/actuator/health
+curl http://localhost:8080/kanban/q/health
 ```
 
-## Run with Docker
+## Build and run native
 
 ```bash
-docker build -t kanban-api .
-docker run -p 8080:8080 -e KANBOARD_API_TOKEN=your_token kanban-api
+# Build the native image (Linux binary via the Mandrel builder container — needs Docker)
+./mvnw package -Dnative -Dquarkus.native.container-build=true \
+  -Dquarkus.native.builder-image=quay.io/quarkus/ubi9-quarkus-mandrel-builder-image:jdk-25
+
+# Wrap the runner in the runtime image and run it
+docker build -f src/main/docker/Dockerfile.native -t kanban-mcp .
+docker run -p 8080:8080 -e KANBOARD_API_TOKEN=your_token kanban-mcp
 ```
+
+A JVM build (`./mvnw package` then `java -jar target/quarkus-app/quarkus-run.jar`) is the fallback if a native build is ever unavailable.
 
 ## Deploy to AWS (CI/CD)
 
@@ -124,10 +131,10 @@ This repo includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) th
 
 ```
 push to main
-  → run tests
-  → build Docker image
+  → build native image + run native integration test (verify -Dnative)
+  → build runtime Docker image (Dockerfile.native)
   → push to ECR
-  → SSH deploy to EC2
+  → SSH deploy to EC2 (docker run + image prune)
 ```
 
 ### Required GitHub Secrets
@@ -156,14 +163,14 @@ Two auth layers: a static bearer token at Caddy (edge), and Basic Auth per reque
 sequenceDiagram
     participant CC as Claude Code
     participant C as Caddy
-    participant MCP as KanbanMCP<br/>(Spring Boot)
+    participant MCP as KanbanMCP<br/>(Quarkus native)
     participant KB as Kanboard API
 
     Note over CC,C: Static bearer token — no session, no expiry
-    Note over C,MCP: Caddy strips /kanban prefix
+    Note over C,MCP: Caddy forwards /kanban/* unchanged (no strip_prefix)
 
     CC->>+C: Tool call /kanban/mcp<br/>Authorization: Bearer <token>
-    C->>+MCP: Forward → /mcp<br/>(uri strip_prefix /kanban)
+    C->>+MCP: Forward → /kanban/mcp<br/>(app root-path is /kanban)
     Note over MCP: Build Basic Auth header<br/>base64(username:apiToken)
     MCP->>+KB: POST /jsonrpc.php<br/>Authorization: Basic ...
     KB-->>-MCP: JSON-RPC response
@@ -176,7 +183,9 @@ sequenceDiagram
 
 ## Design notes
 
+- Quarkus CDI (`@ApplicationScoped`) beans; tools are auto-discovered `@Tool`-annotated methods (no manual registration)
 - `KanboardClient` uses `java.net.http.HttpClient` — no extra HTTP libraries
 - Tools return `JsonNode` pretty-printed as strings — no model POJOs needed
-- Java records for all DTOs
+- Java records for all DTOs; `@RegisterForReflection` on the JSON-RPC DTOs so they survive native compilation
 - `KANBOARD_API_TOKEN` must be injected at runtime — all other config has defaults in `application.yml`
+- `ReadmeToolsTest` fails the build if the tool set drifts from the table above

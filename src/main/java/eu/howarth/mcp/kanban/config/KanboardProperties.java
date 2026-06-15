@@ -1,12 +1,14 @@
 package eu.howarth.mcp.kanban.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import io.smallrye.config.ConfigMapping;
 
-@ConfigurationProperties(prefix = "kanboard")
-public record KanboardProperties(
-        String url,
-        String apiToken,
-        String username,
-        int userId
-) {
+@ConfigMapping(prefix = "kanboard")
+public interface KanboardProperties {
+    String url();
+
+    String apiToken();
+
+    String username();
+
+    int userId();
 }

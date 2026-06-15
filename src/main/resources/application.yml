@@ -10,6 +10,6 @@ quarkus:
 
 kanboard:
   url: ${KANBOARD_URL:https://kanban.howarth.eu/jsonrpc.php}
-  api-token: ${KANBOARD_API_TOKEN:}
+  api-token: ${KANBOARD_API_TOKEN:unset}   # non-empty default: SmallRye converts "" to null and fails @ConfigMapping validation (SRCFG00040). Real token injected at runtime.
   username: ${KANBOARD_USERNAME:claude}
   user-id: ${KANBOARD_USER_ID:29}

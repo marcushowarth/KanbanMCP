@@ -34,13 +34,15 @@ public class BoardTools {
             @ToolArg(description = "The numeric ID of the task to move") int taskId,
             @ToolArg(description = "The numeric ID of the destination column") int columnId,
             @ToolArg(description = "The position within the column (1-based)") int position,
-            @ToolArg(description = "The swimlane ID (use 1 for default swimlane)") int swimlaneId) {
+            @ToolArg(description = "The destination swimlane ID (optional). Omit to keep the task in its current swimlane.", required = false) Integer swimlaneId) {
+        // Kanboard's moveTaskPosition requires swimlane_id to be present; 0 is its
+        // "leave the swimlane as-is" sentinel (verified against the live board).
         return client.executePretty("moveTaskPosition", Map.of(
                 "project_id", projectId,
                 "task_id", taskId,
                 "column_id", columnId,
                 "position", position,
-                "swimlane_id", swimlaneId
+                "swimlane_id", swimlaneId != null ? swimlaneId : 0
         ));
     }
 }

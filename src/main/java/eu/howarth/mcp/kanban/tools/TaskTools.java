@@ -55,7 +55,7 @@ public class TaskTools {
         return client.executePretty("createTask", params);
     }
 
-    @Tool(description = "Update an existing task. Only provide the fields you want to change; unspecified fields remain unchanged.")
+    @Tool(description = "Update an existing task's fields (title, description, color, owner, due date, priority, category). Only provide the fields you want to change; unspecified fields remain unchanged. Does not move the task between columns or projects — use moveTaskPosition or moveTaskToProject for that.")
     public String updateTask(
             @ToolArg(description = "The numeric ID of the task to update") int taskId,
             @ToolArg(description = "New title (optional)", required = false) String title,

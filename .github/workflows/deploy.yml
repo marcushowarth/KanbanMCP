@@ -6,6 +6,9 @@ on:
     paths-ignore:        # don't redeploy the app for doc/workflow-only changes
       - '**.md'
       - '.github/**'
+  workflow_dispatch:     # manual trigger — needed since .github/** is push-ignored above,
+                          # so changes to this very file (e.g. testing a caching tweak)
+                          # can't self-trigger a run any other way
 
 env:
   AWS_REGION: eu-west-2

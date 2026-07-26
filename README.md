@@ -95,6 +95,8 @@ Config file locations:
 
 Restart Claude Desktop after editing. The MCP server will appear in the tools panel.
 
+> **Known limitation:** this only works via the local `mcpServers` config above, which is a separate mechanism from Claude's newer [Connectors](https://claude.com/docs/connectors/building) feature (Settings → Connectors) and isn't available in Claude mobile or Cowork. Connectors requires OAuth, which this server doesn't implement yet — Caddy-layer bearer tokens aren't a supported Connectors auth method on an individual plan. Tracked in [#2](https://github.com/marcushowarth/KanbanMCP/issues/2).
+
 ## Use with Claude Code
 
 A `.mcp.json` is included in this repo. Claude Code will pick it up automatically when run from this directory, pointing at `http://localhost:8080/kanban/mcp`.

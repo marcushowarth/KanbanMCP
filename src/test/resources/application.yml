@@ -1,0 +1,8 @@
+# Test-only overlay, merged on top of src/main/resources/application.yml.
+# Points Quarkus OIDC Dev Services at a custom realm import mirroring the
+# audience claim the app actually requires, instead of Dev Services' bare
+# default realm — see OAuthMcpEndpointTest for why.
+quarkus:
+  keycloak:
+    devservices:
+      realm-path: kanban-mcp-test-realm.json

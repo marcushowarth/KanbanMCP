@@ -127,7 +127,7 @@ sequenceDiagram
     M-->>D: 200 tool result
 ```
 
-**Status:** app-side implementation done and tested ([#2](https://github.com/marcushowarth/KanbanMCP/issues/2)) — `/kanban/oauth/mcp` is a second, OIDC-secured `quarkus-mcp-server` instance exposing the same tools, backed by Keycloak's `personal-infra` realm (see [Deploy](#deploy-cicd) below). **Not yet deployed** — the production Caddy config still needs a matching site block that lets this path through to the app without the static bearer-token gate (the existing `/kanban/*` block would otherwise reject any OAuth bearer token before the app ever sees it).
+**Status:** live in production ([#2](https://github.com/marcushowarth/KanbanMCP/issues/2)) — `/kanban/oauth/mcp` is a second, OIDC-secured `quarkus-mcp-server` instance exposing the same tools, backed by Keycloak's `personal-infra` realm. Verified end-to-end against the deployed instance: the RFC 9728 handshake, protected-resource metadata (with a `resource` field matching this URL exactly, per Anthropic's requirement), and the Caddy passthrough for both `/kanban/oauth/*` and `/kanban/.well-known/*` (needed unauthenticated, since Claude fetches metadata before it has a token). Not yet added as an actual Claude Connector — that's the next real-world test.
 
 ## Use with Claude Code
 

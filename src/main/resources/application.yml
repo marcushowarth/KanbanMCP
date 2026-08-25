@@ -8,7 +8,19 @@ quarkus:
     cors:
       enabled: true   # required by the streamable-HTTP MCP transport (quarkus-mcp-server-http)
     auth:
+      # Proactive auth off: without this, Quarkus attempts to validate ANY
+      # presented Authorization: Bearer header against every registered auth
+      # mechanism (including OIDC) on EVERY path, regardless of that path's own
+      # policy. That broke the pre-existing /kanban/mcp bearer-token path in
+      # production (#966) — real Claude Code traffic with a valid static token
+      # got a 401 OIDC challenge instead of reaching the app. With this off,
+      # authentication is only attempted when the resolved policy for the
+      # matched path actually requires it.
+      proactive: false
       permission:
+        bearer-mcp:
+          paths: /kanban/mcp
+          policy: permit
         oauth-mcp:
           paths: /kanban/oauth/mcp
           policy: authenticated

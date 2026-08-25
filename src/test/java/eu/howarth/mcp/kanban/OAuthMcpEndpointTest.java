@@ -63,6 +63,21 @@ class OAuthMcpEndpointTest {
         assertEquals("https://mcp.howarth.eu/kanban/oauth/mcp", configuredResourceUrl);
     }
 
+    @Inject
+    @ConfigProperty(name = "quarkus.oidc.resource-metadata.scopes")
+    java.util.List<String> configuredScopes;
+
+    @Test
+    void protectedResourceMetadataAdvertisesTheScopesTheClientActuallyHas() {
+        // Real production incident (2026-08-25): with this left unset, a real Claude
+        // Connector attempt failed at the authorization step with oauth_error=
+        // invalid_scope (reproduced directly by driving the actual claude.ai
+        // Connectors UI, not just guessed at). Anthropic's docs say Claude requests
+        // whatever scopes_supported the RFC 9728 doc advertises — apparently an
+        // absent list isn't equivalent to "request nothing." Explicit list fixes it.
+        assertEquals(java.util.List.of("openid", "offline_access"), configuredScopes);
+    }
+
     @Test
     void bearerPathIsNotInterceptedByOidc() {
         // Regression test for a real production incident (2026-08-25): the OIDC

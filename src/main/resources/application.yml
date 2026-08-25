@@ -36,6 +36,7 @@ quarkus:
     resource-metadata:
       enabled: true   # auto-handles RFC 9728 protected-resource metadata + the 401/WWW-Authenticate challenge
       resource: ${OIDC_RESOURCE_URL:https://mcp.howarth.eu/kanban/oauth/mcp}   # must match the Connector URL exactly, incl. path (Anthropic's requirement) - Quarkus otherwise defaults to the bare origin
+      scopes: openid,offline_access   # explicit scopes_supported in the RFC 9728 doc. Left unset, Claude got an "invalid_scope" error from Keycloak on every real connector attempt (#966) — Claude requests whatever scopes_supported advertises, and an absent list apparently isn't the same as "request nothing."
 
 # auth-server-url deliberately absent above (dev/test): lets Quarkus OIDC Dev Services
 # auto-provision its own ephemeral Keycloak instead. Only %prod gets the real one.

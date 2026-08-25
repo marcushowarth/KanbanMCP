@@ -10,6 +10,7 @@ import jakarta.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * The OAuth-secured MCP entry point (Claude Connectors — Desktop/web/mobile),
@@ -41,6 +42,25 @@ class OAuthMcpEndpointTest {
                 .then()
                 .statusCode(401)
                 .header("WWW-Authenticate", containsString("resource_metadata"));
+    }
+
+    @Inject
+    @ConfigProperty(name = "quarkus.oidc.resource-metadata.resource")
+    String configuredResourceUrl;
+
+    @Test
+    void protectedResourceMetadataResourceIsConfiguredToMatchTheConnectorUrlExactly() {
+        // Anthropic requires the RFC 9728 "resource" field to match the Connector URL
+        // exactly, including path — Quarkus defaults this to the bare origin otherwise,
+        // which is wrong for a server that isn't mounted at "/". Caught live in prod
+        // 2026-08-25 (a real Claude Connector would have rejected the mismatch).
+        //
+        // This asserts the CONFIG VALUE rather than hitting the live well-known route:
+        // Quarkus only registers that route when auth-server-url is statically known at
+        // build time, which Dev Services' runtime-injected value doesn't satisfy — the
+        // route genuinely 404s in dev/test regardless of whether this config is correct.
+        // Verified against the real deployed instance separately (curl, post-deploy).
+        assertEquals("https://mcp.howarth.eu/kanban/oauth/mcp", configuredResourceUrl);
     }
 
     @Test

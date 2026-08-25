@@ -23,6 +23,7 @@ quarkus:
       audience: kanban-mcp
     resource-metadata:
       enabled: true   # auto-handles RFC 9728 protected-resource metadata + the 401/WWW-Authenticate challenge
+      resource: ${OIDC_RESOURCE_URL:https://mcp.howarth.eu/kanban/oauth/mcp}   # must match the Connector URL exactly, incl. path (Anthropic's requirement) - Quarkus otherwise defaults to the bare origin
 
 # auth-server-url deliberately absent above (dev/test): lets Quarkus OIDC Dev Services
 # auto-provision its own ephemeral Keycloak instead. Only %prod gets the real one.

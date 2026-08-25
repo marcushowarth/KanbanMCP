@@ -64,6 +64,25 @@ class OAuthMcpEndpointTest {
     }
 
     @Test
+    void bearerPathIsNotInterceptedByOidc() {
+        // Regression test for a real production incident (2026-08-25): the OIDC
+        // config originally lived on the DEFAULT (unnamed) tenant with tenant-paths
+        // restricting only /kanban/oauth/mcp — but the default tenant's filter still
+        // ran for every request carrying an Authorization: Bearer header app-wide,
+        // regardless of tenant-paths. That took down the pre-existing bearer-token
+        // path used by Claude Code in production: a valid static token got a 401
+        // OIDC challenge instead of reaching the app (Caddy is what actually gates
+        // this path in prod — the app itself must impose no OIDC auth here at all).
+        // Fixed by moving OIDC config onto a named tenant ("oauth"), which only
+        // activates for requests actually matching its own tenant-paths.
+        given()
+                .header("Authorization", "Bearer some-static-non-jwt-token")
+                .when().post("/kanban/mcp")
+                .then()
+                .header("WWW-Authenticate", org.hamcrest.Matchers.nullValue());
+    }
+
+    @Test
     void validTokenReachesTheEndpoint() {
         String accessToken = given()
                 .contentType("application/x-www-form-urlencoded")

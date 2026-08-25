@@ -3,12 +3,16 @@ package eu.howarth.mcp.kanban.tools;
 import eu.howarth.mcp.kanban.client.KanboardClient;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
+import io.quarkiverse.mcp.server.McpServer;
+import static io.quarkiverse.mcp.server.McpServer.DEFAULT;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
 import java.util.Map;
 
 @ApplicationScoped
+@McpServer(DEFAULT)
+@McpServer("oauth")
 public class TagTools {
 
     private final KanboardClient client;

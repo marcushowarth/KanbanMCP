@@ -5,11 +5,15 @@ import eu.howarth.mcp.kanban.client.KanboardClient;
 import eu.howarth.mcp.kanban.config.KanboardProperties;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
+import io.quarkiverse.mcp.server.McpServer;
+import static io.quarkiverse.mcp.server.McpServer.DEFAULT;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.Map;
 
 @ApplicationScoped
+@McpServer(DEFAULT)
+@McpServer("oauth")
 public class CommentTools {
 
     private final KanboardClient client;

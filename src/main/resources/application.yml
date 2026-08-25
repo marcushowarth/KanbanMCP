@@ -7,6 +7,22 @@ quarkus:
     root-path: /kanban
     cors:
       enabled: true   # required by the streamable-HTTP MCP transport (quarkus-mcp-server-http)
+    auth:
+      permission:
+        oauth-mcp:
+          paths: /kanban/oauth/mcp
+          policy: authenticated
+  mcp:
+    server:
+      oauth:
+        http:
+          root-path: /oauth/mcp   # combined with quarkus.http.root-path -> /kanban/oauth/mcp
+  oidc:
+    tenant-paths: /kanban/oauth/mcp
+    token:
+      audience: kanban-mcp
+    resource-metadata:
+      enabled: true   # auto-handles RFC 9728 protected-resource metadata + the 401/WWW-Authenticate challenge
 
 kanboard:
   url: ${KANBOARD_URL:https://kanban.howarth.eu/jsonrpc.php}

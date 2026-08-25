@@ -24,6 +24,13 @@ quarkus:
     resource-metadata:
       enabled: true   # auto-handles RFC 9728 protected-resource metadata + the 401/WWW-Authenticate challenge
 
+# auth-server-url deliberately absent above (dev/test): lets Quarkus OIDC Dev Services
+# auto-provision its own ephemeral Keycloak instead. Only %prod gets the real one.
+"%prod":
+  quarkus:
+    oidc:
+      auth-server-url: ${OIDC_AUTH_SERVER_URL:https://auth.howarth.eu/realms/personal-infra}
+
 kanboard:
   url: ${KANBOARD_URL:https://kanban.howarth.eu/jsonrpc.php}
   api-token: ${KANBOARD_API_TOKEN:unset}   # non-empty default: SmallRye converts "" to null and fails @ConfigMapping validation (SRCFG00040). Real token injected at runtime.

@@ -95,7 +95,39 @@ Config file locations:
 
 Restart Claude Desktop after editing. The MCP server will appear in the tools panel.
 
-> **Known limitation:** this only works via the local `mcpServers` config above, which is a separate mechanism from Claude's newer [Connectors](https://claude.com/docs/connectors/building) feature (Settings → Connectors) and isn't available in Claude mobile or Cowork. Connectors requires OAuth, which this server doesn't implement yet — Caddy-layer bearer tokens aren't a supported Connectors auth method on an individual plan. Tracked in [#2](https://github.com/marcushowarth/KanbanMCP/issues/2).
+> This local `mcpServers` config is a separate mechanism from Claude's newer [Connectors](https://claude.com/docs/connectors/building) feature (Settings → Connectors), which is what Claude Desktop/web/mobile/Cowork actually need for a one-click "Add Connector" setup rather than editing a JSON file. See **OAuth (Claude Connectors)** below.
+
+## OAuth (Claude Connectors) — recommended for Desktop/web/mobile
+
+Add via Claude → Settings → Connectors → Add Connector, URL:
+
+```
+https://your-mcp-host/kanban/oauth/mcp
+```
+
+Claude drives the whole flow itself — discovery, registration, browser consent, token refresh — nothing to configure beyond entering the URL. This is a *separate, additive* endpoint: the bearer-token `mcpServers` setup above (used by Claude Code) is completely untouched and keeps working exactly as before.
+
+```mermaid
+sequenceDiagram
+    participant D as Claude Desktop/Web
+    participant M as KanbanMCP<br/>(/kanban/oauth/mcp)
+    participant K as Keycloak<br/>(personal-infra realm)
+
+    D->>M: request, no token
+    M-->>D: 401 WWW-Authenticate: Bearer resource_metadata=...
+    D->>M: GET /.well-known/oauth-protected-resource
+    M-->>D: authorization_servers: [auth.howarth.eu/realms/personal-infra]
+    D->>K: OIDC discovery + Dynamic Client Registration
+    K-->>D: client_id
+    D->>K: authorize (PKCE S256) — browser opens
+    Note over D,K: user logs in + consents
+    K-->>D: auth code → exchanged for access_token (JWT)
+    D->>M: request, Authorization: Bearer <JWT>
+    M->>K: validate JWT (JWKS)
+    M-->>D: 200 tool result
+```
+
+**Status:** app-side implementation done and tested ([#2](https://github.com/marcushowarth/KanbanMCP/issues/2)) — `/kanban/oauth/mcp` is a second, OIDC-secured `quarkus-mcp-server` instance exposing the same tools, backed by Keycloak's `personal-infra` realm (see [Deploy](#deploy-cicd) below). **Not yet deployed** — the production Caddy config still needs a matching site block that lets this path through to the app without the static bearer-token gate (the existing `/kanban/*` block would otherwise reject any OAuth bearer token before the app ever sees it).
 
 ## Use with Claude Code
 
@@ -160,9 +192,9 @@ GHCR auth uses the built-in `GITHUB_TOKEN` — no registry credentials to manage
 - **Deploy user** — dedicated, own SSH key, docker group (not root)
 - **Caddy** — reverse proxy on the host for HTTPS + automatic Let's Encrypt cert
 
-## Auth model
+## Auth model (bearer token / Claude Code)
 
-Two auth layers: a static bearer token at Caddy (edge), and Basic Auth per request to Kanboard.
+See [OAuth (Claude Connectors)](#oauth-claude-connectors--recommended-for-desktopwebmobile) above for the Desktop/web/mobile path — this section covers the original bearer-token path, still used by Claude Code. Two auth layers: a static bearer token at Caddy (edge), and Basic Auth per request to Kanboard.
 
 ```mermaid
 sequenceDiagram

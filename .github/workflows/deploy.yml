@@ -94,7 +94,8 @@ jobs:
               -p 127.0.0.1:${{ env.HOST_PORT }}:8080 \
               -e KANBOARD_API_TOKEN='${{ secrets.KANBOARD_API_TOKEN }}' \
               ${{ env.IMAGE }}:latest
-            docker image prune -f"
+            docker image prune -f
+            docker logout ghcr.io"
           rm -f /tmp/deploy_key
 
       - name: Health-check the freshly deployed container

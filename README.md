@@ -127,7 +127,7 @@ sequenceDiagram
     M-->>D: 200 tool result
 ```
 
-**Status:** live in production ([#2](https://github.com/marcushowarth/KanbanMCP/issues/2)) — `/kanban/oauth/mcp` is a second, OIDC-secured `quarkus-mcp-server` instance exposing the same tools, backed by Keycloak's `personal-infra` realm. Verified end-to-end against the deployed instance: the RFC 9728 handshake, protected-resource metadata (with a `resource` field matching this URL exactly, per Anthropic's requirement), and the Caddy passthrough for both `/kanban/oauth/*` and `/kanban/.well-known/*` (needed unauthenticated, since Claude fetches metadata before it has a token). Not yet added as an actual Claude Connector — that's the next real-world test.
+**Status:** live in production and verified end-to-end from a real Claude Desktop client ([#2](https://github.com/marcushowarth/KanbanMCP/issues/2)) — `/kanban/oauth/mcp` is a second, OIDC-secured `quarkus-mcp-server` instance exposing the same tools, backed by Keycloak's `personal-infra` realm. Confirmed: the RFC 9728 handshake, protected-resource metadata, the Caddy passthrough for `/kanban/oauth/*` and `/kanban/.well-known/*`, and a full real Connector add — Keycloak login, consent, token issuance, tool calls all working from Desktop.
 
 ## Use with Claude Code
 

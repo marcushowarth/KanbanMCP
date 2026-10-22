@@ -52,6 +52,10 @@ A Quarkus-native MCP (Model Context Protocol) server that bridges Claude to a [K
 | `KANBOARD_URL` | `https://kanban.howarth.eu/jsonrpc.php` | JSON-RPC endpoint |
 | `KANBOARD_API_TOKEN` | *(required)* | API token from Kanboard profile |
 | `KANBOARD_USERNAME` | `claude` | Basic auth username |
+| `KANBOARD_USERS_<NAME>_USERNAME` | *(none)* | Kanboard account for OAuth user `<name>` (see [Per-user Kanboard accounts](#per-user-kanboard-accounts)) |
+| `KANBOARD_USERS_<NAME>_API_TOKEN` | *(none)* | That account's API token |
+
+The default account is used by the bearer-token path. The comment author is the calling account's own user id, looked up once per account with `getMe`.
 
 Get your API token: Kanboard → Profile → API → Personal token.
 
@@ -127,6 +131,21 @@ sequenceDiagram
     M-->>D: 200 tool result
 ```
 
+### Per-user Kanboard accounts
+
+Each OAuth user calls Kanboard as their **own** Kanboard account, so Kanboard's project roles decide what they can see and change. The OAuth username (the token's `preferred_username`) picks the account:
+
+```
+KANBOARD_USERS_ALICE_USERNAME=alice
+KANBOARD_USERS_ALICE_API_TOKEN=<alice's Kanboard API token>
+```
+
+- **An OAuth user with no mapping is refused** with a tool error naming them. They never fall back to the default account, which may see boards they shouldn't.
+- **Comments** are authored by the calling account (its id comes from `getMe`), so each user can edit and remove only their own.
+- **The bearer-token path** (Claude Code) is unchanged: it has no identity in the app and uses the default `KANBOARD_USERNAME` account.
+
+To keep using the connector yourself as the default account, map your own OAuth username to it.
+
 **Status:** live in production and verified end-to-end from a real Claude Desktop client ([#2](https://github.com/marcushowarth/KanbanMCP/issues/2)) — `/kanban/oauth/mcp` is a second, OIDC-secured `quarkus-mcp-server` instance exposing the same tools, backed by Keycloak's `personal-infra` realm. Confirmed: the RFC 9728 handshake, protected-resource metadata, the Caddy passthrough for `/kanban/oauth/*` and `/kanban/.well-known/*`, and a full real Connector add — Keycloak login, consent, token issuance, tool calls all working from Desktop.
 
 ## Use with Claude Code
@@ -183,6 +202,8 @@ A separate `ci.yml` runs `verify` (tests only, no deploy) on every branch and pu
 | `HETZNER_SSH_KEY` | SSH private key for the deploy user |
 | `KANBOARD_API_TOKEN` | Passed to the container at runtime |
 
+Per-user accounts (`KANBOARD_USERS_*`) come from an env file on the host, `/opt/kanban-mcp/kanban-mcp.env` (mode 600, readable by the deploy user), passed with `--env-file`. The deploy checks for it first and stops without touching the running container if it's missing, so create it (even empty) before the first deploy.
+
 GHCR auth uses the built-in `GITHUB_TOKEN` — no registry credentials to manage.
 
 ### Host setup summary
@@ -225,4 +246,5 @@ sequenceDiagram
 - Tools return `JsonNode` pretty-printed as strings — no model POJOs needed
 - Java records for all DTOs; `@RegisterForReflection` on the JSON-RPC DTOs so they survive native compilation
 - `KANBOARD_API_TOKEN` must be injected at runtime — all other config has defaults in `application.yml`
+- `KanboardCredentials` picks the account per call from the request's authenticated user. It doesn't inject `SecurityIdentity`: asking for the identity on the bearer path makes OIDC try to validate Caddy's static token, and the call fails (`PerUserCredentialsMcpTest` covers both paths against a stub Kanboard)
 - `ReadmeToolsTest` fails the build if the tool set drifts from the table above

@@ -21,7 +21,7 @@ class BoardToolsTest {
         Map<String, Object> lastParams;
 
         CapturingClient() {
-            super(null, null);
+            super(null, null, null);
         }
 
         @Override

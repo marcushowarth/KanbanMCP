@@ -33,6 +33,7 @@ quarkus:
     tenant-paths: /kanban/oauth/mcp
     token:
       audience: kanban-mcp
+      principal-claim: preferred_username   # the OAuth username that kanboard.users is keyed by
     resource-metadata:
       enabled: true   # auto-handles RFC 9728 protected-resource metadata + the 401/WWW-Authenticate challenge
       resource: ${OIDC_RESOURCE_URL:https://mcp.howarth.eu/kanban/oauth/mcp}   # must match the Connector URL exactly, incl. path (Anthropic's requirement) - Quarkus otherwise defaults to the bare origin
@@ -49,4 +50,3 @@ kanboard:
   url: ${KANBOARD_URL:https://kanban.howarth.eu/jsonrpc.php}
   api-token: ${KANBOARD_API_TOKEN:unset}   # non-empty default: SmallRye converts "" to null and fails @ConfigMapping validation (SRCFG00040). Real token injected at runtime.
   username: ${KANBOARD_USERNAME:claude}
-  user-id: ${KANBOARD_USER_ID:29}

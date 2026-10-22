@@ -28,8 +28,7 @@ class KanboardPropertiesTest {
     private static final Map<String, String> DEFAULTS = Map.of(
             "KANBOARD_URL", "https://kanboard.example/jsonrpc.php",
             "KANBOARD_API_TOKEN", "default-token",
-            "KANBOARD_USERNAME", "claude",
-            "KANBOARD_USER_ID", "29");
+            "KANBOARD_USERNAME", "claude");
 
     @Test
     void mappedUserIsReadFromEnvironmentVariables() {

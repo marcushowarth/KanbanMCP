@@ -36,6 +36,17 @@
           "temporary": false
         }
       ]
+    },
+    {
+      "username": "unmapped-user",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "unmapped-password",
+          "temporary": false
+        }
+      ]
     }
   ]
 }

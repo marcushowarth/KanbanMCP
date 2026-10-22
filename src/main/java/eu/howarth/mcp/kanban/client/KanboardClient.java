@@ -13,6 +13,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @ApplicationScoped
@@ -21,12 +22,15 @@ public class KanboardClient {
     private static final Logger log = Logger.getLogger(KanboardClient.class);
 
     private final KanboardProperties properties;
+    private final KanboardCredentials credentials;
     private final ObjectMapper objectMapper;
     private final HttpClient httpClient;
     private final AtomicInteger requestId = new AtomicInteger(1);
+    private final Map<String, Integer> userIds = new ConcurrentHashMap<>();
 
-    public KanboardClient(KanboardProperties properties, ObjectMapper objectMapper) {
+    public KanboardClient(KanboardProperties properties, KanboardCredentials credentials, ObjectMapper objectMapper) {
         this.properties = properties;
+        this.credentials = credentials;
         this.objectMapper = objectMapper;
         this.httpClient = HttpClient.newHttpClient();
     }
@@ -36,15 +40,15 @@ public class KanboardClient {
     }
 
     public JsonNode execute(String method, Map<String, Object> params) {
+        var caller = credentials.current();
         try {
             var request = new JsonRpcRequest(method, requestId.getAndIncrement(), params);
             String body = objectMapper.writeValueAsString(request);
 
             log.debugf("Kanboard request: %s %s", method, body);
 
-            String credentials = properties.username() + ":" + properties.apiToken();
             String authHeader = "Basic " + Base64.getEncoder()
-                    .encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
+                    .encodeToString((caller.username() + ":" + caller.apiToken()).getBytes(StandardCharsets.UTF_8));
 
             HttpRequest httpRequest = HttpRequest.newBuilder()
                     .uri(URI.create(properties.url()))
@@ -71,6 +75,12 @@ public class KanboardClient {
         } catch (Exception e) {
             throw new KanboardException("Failed to call Kanboard API: " + method, e);
         }
+    }
+
+    /** The calling account's Kanboard user id, from {@code getMe}, looked up once per account. */
+    public int currentUserId() {
+        return userIds.computeIfAbsent(credentials.current().username(),
+                username -> execute("getMe").get("id").asInt());
     }
 
     public String executePretty(String method) {

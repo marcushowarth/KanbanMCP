@@ -1,6 +1,7 @@
 package eu.howarth.mcp.kanban.client;
 
 import eu.howarth.mcp.kanban.config.KanboardProperties;
+import io.quarkiverse.mcp.server.ToolCallException;
 import io.quarkus.security.runtime.QuarkusPrincipal;
 import io.quarkus.security.runtime.QuarkusSecurityIdentity;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,6 @@ class KanboardCredentialsTest {
             public String url() { return "https://kanboard.example/jsonrpc.php"; }
             public String apiToken() { return "default-token"; }
             public String username() { return "claude"; }
-            public int userId() { return 29; }
             public Map<String, User> users() {
                 @SuppressWarnings({"unchecked", "rawtypes"})
                 Map<String, User> typed = (Map) users;
@@ -63,7 +63,7 @@ class KanboardCredentialsTest {
 
     @Test
     void unmappedOAuthUserIsRefused() {
-        var e = assertThrows(KanboardException.class, () -> credentials.resolve(oauthUser("someone")));
+        var e = assertThrows(ToolCallException.class, () -> credentials.resolve(oauthUser("someone")));
         assertTrue(e.getMessage().contains("someone"));
         assertFalse(e.getMessage().contains("default-token"));
     }

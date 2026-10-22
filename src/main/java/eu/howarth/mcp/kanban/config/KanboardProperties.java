@@ -12,8 +12,6 @@ public interface KanboardProperties {
 
     String username();
 
-    int userId();
-
     /** Kanboard accounts for OAuth callers, keyed by their OAuth username. */
     Map<String, User> users();
 

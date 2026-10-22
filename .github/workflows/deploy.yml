@@ -93,6 +93,7 @@ jobs:
               --restart unless-stopped \
               -p 127.0.0.1:${{ env.HOST_PORT }}:8080 \
               -e KANBOARD_API_TOKEN='${{ secrets.KANBOARD_API_TOKEN }}' \
+              --env-file /opt/kanban-mcp/kanban-mcp.env \
               ${{ env.IMAGE }}:latest
             docker image prune -f
             docker logout ghcr.io"

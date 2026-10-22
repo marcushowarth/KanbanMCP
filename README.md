@@ -202,7 +202,7 @@ A separate `ci.yml` runs `verify` (tests only, no deploy) on every branch and pu
 | `HETZNER_SSH_KEY` | SSH private key for the deploy user |
 | `KANBOARD_API_TOKEN` | Passed to the container at runtime |
 
-Per-user accounts (`KANBOARD_USERS_*`) come from an env file on the host, `/opt/kanban-mcp/kanban-mcp.env` (mode 600, readable by the deploy user), passed with `--env-file`. The deploy fails if it's missing, so create it (even empty) before the first deploy.
+Per-user accounts (`KANBOARD_USERS_*`) come from an env file on the host, `/opt/kanban-mcp/kanban-mcp.env` (mode 600, readable by the deploy user), passed with `--env-file`. The deploy checks for it first and stops without touching the running container if it's missing, so create it (even empty) before the first deploy.
 
 GHCR auth uses the built-in `GITHUB_TOKEN` — no registry credentials to manage.
 

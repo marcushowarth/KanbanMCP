@@ -84,7 +84,8 @@ jobs:
           chmod 600 /tmp/deploy_key
           ssh -i /tmp/deploy_key -o StrictHostKeyChecking=no \
             deploy@${{ secrets.HETZNER_HOST }} \
-            "echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            "test -r /opt/kanban-mcp/kanban-mcp.env || { echo 'kanban-mcp.env missing or unreadable, keeping the running container'; exit 1; }
+            echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker pull ${{ env.IMAGE }}:latest
             docker stop kanban-mcp || true
             docker rm kanban-mcp || true

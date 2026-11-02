@@ -91,7 +91,7 @@ jobs:
             docker rm kanban-mcp || true
             docker run -d \
               --name kanban-mcp \
-              --restart unless-stopped \
+              --restart always \
               -p 127.0.0.1:${{ env.HOST_PORT }}:8080 \
               -e KANBOARD_API_TOKEN='${{ secrets.KANBOARD_API_TOKEN }}' \
               --env-file /opt/kanban-mcp/kanban-mcp.env \

@@ -88,11 +88,14 @@ public class KanboardClient {
     }
 
     public String executePretty(String method, Map<String, Object> params) {
-        JsonNode result = execute(method, params);
+        return pretty(execute(method, params));
+    }
+
+    public String pretty(JsonNode result) {
         try {
             return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(result);
         } catch (Exception e) {
-            throw new KanboardException("Failed to serialize response for: " + method, e);
+            throw new KanboardException("Failed to serialize response", e);
         }
     }
 }

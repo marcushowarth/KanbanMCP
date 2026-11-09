@@ -100,8 +100,8 @@ class GetBoardTest {
         assertFalse(card.has("recurrence_status"));
         assertFalse(card.has("assignee_avatar_path"));
         assertEquals("Open card", card.get("title").asText());
-        assertEquals("Done", card.get("column_name").asText());
-        assertEquals("General", card.get("swimlane_name").asText());
+        assertFalse(card.has("column_name"), "the card sits inside its column");
+        assertFalse(card.has("swimlane_name"), "and inside its swimlane");
         assertEquals("claude", card.get("assignee_username").asText());
         assertEquals("Software & Portfolio", card.get("category_name").asText());
         assertEquals(200, card.get("date_moved").asInt());

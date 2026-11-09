@@ -24,14 +24,16 @@ public class BoardTools {
         this.client = client;
     }
 
-    /** The card fields kept in the summary; Kanboard sends about 60 per card. */
+    /**
+     * The card fields kept in the summary; Kanboard sends about 60 per card. A card's
+     * column and swimlane aren't repeated, since the card sits inside both.
+     */
     private static final List<String> SUMMARY_FIELDS = List.of(
-            "id", "title", "is_active", "column_id", "column_name", "swimlane_id", "swimlane_name",
-            "position", "owner_id", "assignee_username", "category_id", "category_name", "color_id",
-            "priority", "date_due", "date_creation", "date_moved",
+            "id", "title", "is_active", "assignee_username", "category_name",
+            "date_due", "date_creation", "date_moved",
             "nb_comments", "nb_subtasks", "nb_completed_subtasks", "nb_links");
 
-    @Tool(description = "Get the board for a project: its swimlanes, their columns, and the cards in each. By default returns open cards only, each with summary fields (id, title, column, swimlane, assignee, category, tag names, due/creation/moved dates, comment/subtask/link counts) and no description; use getTask for one card's full detail. Kanboard keeps closed cards on the board, so includeClosed and fullDetail can make the result very large.")
+    @Tool(description = "Get the board for a project: its swimlanes, their columns, and the cards in each. By default returns open cards only, each with summary fields (id, title, assignee, category, tag names, due/creation/moved dates, comment/subtask/link counts) and no description; use getTask for one card's full detail. Kanboard keeps closed cards on the board, so includeClosed and fullDetail can make the result very large.")
     public String getBoard(
             @ToolArg(description = "The numeric ID of the project") int projectId,
             @ToolArg(description = "Also return closed cards (optional, default false)", required = false) Boolean includeClosed,

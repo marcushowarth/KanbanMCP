@@ -16,7 +16,7 @@ A Quarkus-native MCP (Model Context Protocol) server that bridges Claude to a [K
 |-------|------|--------------|
 | ProjectTools | `getAllProjects` | List all accessible projects |
 | ProjectTools | `getProjectById` | Get project by ID |
-| BoardTools | `getBoard` | Full board with columns and swimlanes |
+| BoardTools | `getBoard` | Board with swimlanes and columns: open cards as summaries by default (`includeClosed`, `fullDetail` optional) |
 | BoardTools | `getColumns` | Column IDs, names, positions |
 | BoardTools | `moveTaskPosition` | Move task between columns |
 | TaskTools | `searchTasks` | Search using Kanboard query syntax |

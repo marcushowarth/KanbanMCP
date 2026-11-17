@@ -9,6 +9,7 @@ A Quarkus-native MCP (Model Context Protocol) server that bridges Claude to a [K
 - **MCP transport:** Streamable HTTP (`quarkus-mcp-server-http`)
 - **MCP endpoint:** `/kanban/mcp` (HTTP `root-path` is `/kanban`)
 - **Health endpoint:** `/kanban/q/health` (SmallRye Health)
+- **Version endpoint:** `/kanban/version` returns `{version, buildNumber, gitSha, builtAt}` (the pom version, and `APP_BUILD_NUMBER`, `APP_GIT_SHA`, `APP_BUILT_AT` set by the deploy; `dev` / `unknown` when run locally). Needs no token in the app; Caddy lets this one path past the bearer token, so the ops hub's Running build panel can read it
 
 ## Tools (30)
 
